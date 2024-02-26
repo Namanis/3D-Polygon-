@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
@@ -6,15 +7,10 @@ public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
-        // Input for Rectangle
+
         //Todo for any sized polygon
-//        double[][] points = new double[4][3];
-//        for (int i = 0; i < 4; i++) {
-//            System.out.print("Enter coordinates for point " + (i + 1) + " (x y z): ");
-//            for (int j = 0; j < 3; j++) {
-//                points[i][j] = scanner.nextDouble();
-//            }
-//        }
+
+        // Input for Rectangle
         double[][] points = {
                 {0, 0, 0},
                 {100, 0, 0},
@@ -38,6 +34,7 @@ public class Main {
         System.out.println("Azimuth: " + azimuthDegrees + " degrees");
 
         //Todo 100 must be changed to extreme point distance to points we are calculating
+        // If there are more than 1 extreme point it should be shortest distance to line between extreme points?
         double hypo = 100 / Math.cos(Math.toRadians(slopeDegrees));
 
         //Calculate by how much points should be levitated
@@ -48,6 +45,38 @@ public class Main {
         System.out.println("Hypo: " + hypo );
         System.out.println("z is: " + h);
 
-        //Todo find extreme points determined by Azimuth (can't be more than two or less than one)
+        //Todo find extreme points determined by Azimuth (can't be more than two or less than one).
+        // Given a better thought maybe there can be more than 2 points
+
+        // Find the westernmost points
+        List<Integer> extremePoints = findWest(points);
+        System.out.println("Westernmost Points:");
+        System.out.println(extremePoints.size());
+
+        for (int index : extremePoints) {
+            System.out.println(index);
+            System.out.println("(" + points[index][0] + ", " + points[index][1] + ", " + points[index][2] + ")");
+        }
     }
+
+    //Todo find North, East, and South as well given that user inputs (0, 90, 180)
+    //Todo for any Azimuth input
+    private static List<Integer> findWest(double[][] points) {
+        List<Integer> westIndices = new ArrayList<>();
+        double minCoordinateX = points[0][0];
+        westIndices.add(0);
+        for (int i = 1; i < points.length; i++) {
+            double currentX = points[i][0];
+            if (currentX < minCoordinateX) {
+                minCoordinateX = currentX;
+                westIndices.clear();
+                westIndices.add(i);
+            } else if (currentX == minCoordinateX) {
+                westIndices.add(i);
+            }
+        }
+
+        return westIndices;
+    }
+
 }
