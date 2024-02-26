@@ -159,15 +159,39 @@ public class Main {
             }
 
         }
+        else if (extremePoints.size() >= 2) {
+            // More than one extreme point
+            //Todo take notice that extreme points that are chosen should be the furthest away
+            int extremeIndex1 = extremePoints.get(0);
+            int extremeIndex2 = extremePoints.get(1);
+            //Take extreme points x and y value
+            double x1 = points[extremeIndex1][0];
+            double y1 = points[extremeIndex1][1];
+            double x2 = points[extremeIndex2][0];
+            double y2 = points[extremeIndex2][1];
+
+            //Calculate all distances except for extreme points
+            for (int i = 0; i < points.length; i++) {
+                if (!extremePoints.contains(i)) {
+                    double dist = distanceToLine(points[i][0], points[i][1], x1, y1, x2, y2);
+                    distances.add(dist);
+                }
+            }
+        }
         return distances;
     }
 
     //Distance between two points
     private static double distanceToPoint(double x1, double y1, double x2, double y2) {
+
         return Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
     }
 
-    //Todo distance between point and the line
+    //Distance between point and the line
+    private static double distanceToLine(double x, double y, double x1, double y1, double x2, double y2) {
+
+        return Math.abs((y2 - y1) * x - (x2 - x1) * y + x2 * y1 - y2 * x1)/Math.sqrt(Math.pow(y2 - y1, 2) + Math.pow(x2 - x1, 2));
+    }
 
 
 }
