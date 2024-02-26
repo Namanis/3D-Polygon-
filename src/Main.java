@@ -13,10 +13,8 @@ public class Main {
         // Input for Rectangle
         double[][] points = {
                 {0, 0, 0},
-                {100, 0, 0},
-                {100, 25, 0},
-                {75, 50, 0},
-                {0, 50, 0},
+                {60, 0, 0},
+                {50, 50, 0},
 
         };
 
@@ -46,10 +44,9 @@ public class Main {
         System.out.println("Hypo: " + hypo );
         System.out.println("z is: " + h);
 
-        //Todo find extreme points determined by Azimuth (can't be more than two or less than one).
-        // Given a better thought maybe there can be more than 2 points
 
-        // Find the westernmost points
+
+        // Find the extreme points
         List<Integer> extremePoints = findExtreme(points, azimuthDegrees);
         System.out.println("Extreme Points:");
         System.out.println(extremePoints.size());
@@ -57,6 +54,15 @@ public class Main {
         for (int index : extremePoints) {
             System.out.println(index);
             System.out.println("(" + points[index][0] + ", " + points[index][1] + ", " + points[index][2] + ")");
+        }
+
+        // Calculate distances from non-extreme points to the line formed by the extreme points
+        List<Double> distances = calculateDistancesToExtremePoints(points, extremePoints);
+
+        // Print distances
+        System.out.println("\nDistances to Line:");
+        for (int i = 0; i < distances.size(); i++) {
+            System.out.println("Point " + (i + 1) + ": " + distances.get(i));
         }
     }
 
@@ -131,5 +137,37 @@ public class Main {
 
         return extremePoints;
     }
+
+    //Todo calculate shortest distance to the line
+    //Calculate distance from points to extreme point(one)
+    private static List<Double> calculateDistancesToExtremePoints(double[][] points, List<Integer> extremePoints) {
+        List<Double> distances = new ArrayList<>();
+
+        if (extremePoints.size() == 1) {
+
+            int extremeIndex = extremePoints.get(0);
+            //Take extreme points x and y value
+            double x1 = points[extremeIndex][0];
+            double y1 = points[extremeIndex][1];
+
+            //Calculate all distances except for extreme point
+            for (int i = 0; i < points.length; i++) {
+                if (!extremePoints.contains(i)) {
+                    double dist = distanceToPoint(points[i][0], points[i][1], x1, y1);
+                    distances.add(dist);
+                }
+            }
+
+        }
+        return distances;
+    }
+
+    //Distance between two points
+    private static double distanceToPoint(double x1, double y1, double x2, double y2) {
+        return Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
+    }
+
+    //Todo distance between point and the line
+
 
 }
