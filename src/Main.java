@@ -1,6 +1,4 @@
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 public class Main {
 
@@ -13,8 +11,9 @@ public class Main {
         // Input for Rectangle
         double[][] points = {
                 {0, 0, 0},
-                {60, 0, 0},
-                {50, 50, 0},
+                {100, 0, 0},
+                {100, 50, 0},
+                {0, 50, 0},
 
         };
 
@@ -32,38 +31,32 @@ public class Main {
         System.out.println("Slope: " + slopeDegrees + " degrees");
         System.out.println("Azimuth: " + azimuthDegrees + " degrees");
 
-        //Todo 100 must be changed to extreme point distance to points we are calculating
-        // If there are more than 1 extreme point it should be shortest distance to line between extreme points?
-        double hypo = 100 / Math.cos(Math.toRadians(slopeDegrees));
-
-        //Calculate by how much points should be levitated
-        double h = Math.sqrt(Math.pow(hypo, 2) - Math.pow(100, 2));
-        //Precision match
-        h = Math.round(h * 1000000000.0) / 1000000000.0;
-
-        System.out.println("Hypo: " + hypo );
-        System.out.println("z is: " + h);
 
 
 
         // Find the extreme points
         List<Integer> extremePoints = findExtreme(points, azimuthDegrees);
         System.out.println("Extreme Points:");
-        System.out.println(extremePoints.size());
+        //System.out.println(extremePoints.size());
 
         for (int index : extremePoints) {
-            System.out.println(index);
-            System.out.println("(" + points[index][0] + ", " + points[index][1] + ", " + points[index][2] + ")");
+            System.out.println("Point " + index +"(" + points[index][0] + ", " + points[index][1] + ", " + points[index][2] + ")");
         }
+
+
 
         // Calculate distances from non-extreme points to the line formed by the extreme points
-        List<Double> distances = calculateDistancesToExtremePoints(points, extremePoints);
+        Map<Integer, Double> distancesMap = calculateDistancesToExtremePoints(points, extremePoints);
 
         // Print distances
-        System.out.println("\nDistances to Line:");
-        for (int i = 0; i < distances.size(); i++) {
-            System.out.println("Point " + (i + 1) + ": " + distances.get(i));
+        System.out.println("Distances to Extreme Points/Line:");
+
+        for (Map.Entry<Integer, Double> entry : distancesMap.entrySet()) {
+            System.out.println("Point " + (entry.getKey()+1) + ": " + entry.getValue());
         }
+
+        // Calculate and print modified polygon on 3D plane
+        calculateAndPrintHeights(points, slopeDegrees, distancesMap, extremePoints);
     }
 
 
@@ -138,47 +131,40 @@ public class Main {
         return extremePoints;
     }
 
-    //Todo calculate shortest distance to the line
+
     //Calculate distance from points to extreme point(one)
-    private static List<Double> calculateDistancesToExtremePoints(double[][] points, List<Integer> extremePoints) {
-        List<Double> distances = new ArrayList<>();
-
+    private static Map<Integer, Double> calculateDistancesToExtremePoints(double[][] points, List<Integer> extremePoints) {
+        //List<Double> distances = new ArrayList<>();
+        Map<Integer, Double> distances = new HashMap<>();
         if (extremePoints.size() == 1) {
-
             int extremeIndex = extremePoints.get(0);
-            //Take extreme points x and y value
             double x1 = points[extremeIndex][0];
             double y1 = points[extremeIndex][1];
 
-            //Calculate all distances except for extreme point
             for (int i = 0; i < points.length; i++) {
                 if (!extremePoints.contains(i)) {
                     double dist = distanceToPoint(points[i][0], points[i][1], x1, y1);
-                    distances.add(dist);
+                    distances.put(i, dist);
                 }
             }
-
-        }
-        else if (extremePoints.size() >= 2) {
-            // More than one extreme point
-            //Todo take notice that extreme points that are chosen should be the furthest away
+        } else if (extremePoints.size() >= 2) {
             int extremeIndex1 = extremePoints.get(0);
             int extremeIndex2 = extremePoints.get(1);
-            //Take extreme points x and y value
             double x1 = points[extremeIndex1][0];
             double y1 = points[extremeIndex1][1];
             double x2 = points[extremeIndex2][0];
             double y2 = points[extremeIndex2][1];
 
-            //Calculate all distances except for extreme points
             for (int i = 0; i < points.length; i++) {
                 if (!extremePoints.contains(i)) {
                     double dist = distanceToLine(points[i][0], points[i][1], x1, y1, x2, y2);
-                    distances.add(dist);
+                    distances.put(i, dist);
                 }
             }
         }
+
         return distances;
+
     }
 
     //Distance between two points
@@ -192,6 +178,29 @@ public class Main {
 
         return Math.abs((y2 - y1) * x - (x2 - x1) * y + x2 * y1 - y2 * x1)/Math.sqrt(Math.pow(y2 - y1, 2) + Math.pow(x2 - x1, 2));
     }
+
+    private static void calculateAndPrintHeights(double[][] points, double slopeDegrees, Map<Integer, Double> distancesMap, List<Integer> extremePoints) {
+        System.out.println("Modyfied points on 3d plane");
+
+        for (int i = 0; i < points.length; i++) {
+            // Check if the current point is not an extreme point
+            if (!extremePoints.contains(i)) {
+                double closestDistance = distancesMap.get(i);  // Get the distance from the map
+                double hypo = closestDistance / Math.cos(Math.toRadians(slopeDegrees));
+
+                //Calculate by how much points should be levitated
+                double z = Math.sqrt(Math.pow(hypo, 2) - Math.pow(closestDistance, 2));
+                //Round for nicer numbers
+                z = Math.round(z * 1000000000.0) / 1000000000.0;
+
+                points[i][2] = points[i][2] + z;
+                System.out.println("Point " + (i + 1) + ": (" + points[i][0] + ", " + points[i][1] + ", " + points[i][2] + ")");
+            }//if Extreme don't change
+            else
+                System.out.println("Point " + (i + 1) + ": (" + points[i][0] + ", " + points[i][1] + ", " + points[i][2] + ")");
+        }
+    }
+
 
 
 }
