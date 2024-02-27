@@ -37,4 +37,8 @@ To avoid precision problems, Z is rounded to 9 numbers after decimal
  2. Given that there are more than 2 extreme points, it does not consider the line of extreme points to be from the furthest points. Meaning if there are 3 points, it should find 2 points that are furthest away from each other and make it its line
  3. Some code fragments are repetitive
  4. No third-party libraries were used
+
+## Additional notes
+It took about 30-50 minutes to get familiar with the task. 4 hours of pure programming and 2 hours of testing(I have very little experience with testing). Overall I've spent around 6-7 hours. 
+I expected to finish it faster but working on it I kept running into more calculations I hadn't anticipated earlier that needed to be done to find the solution.
  
