@@ -10,10 +10,9 @@ public class Main {
 
         // Input for Rectangle
         double[][] points = {
-                {0, 0, 0},
-                {100, 0, 0},
-                {100, 50, 0},
-                {0, 50, 0},
+                {50, 50, 0},
+                {100, -50, 0},
+                {50, -100, 0},
 
         };
 
@@ -37,7 +36,7 @@ public class Main {
         // Find the extreme points
         List<Integer> extremePoints = findExtreme(points, azimuthDegrees);
         System.out.println("Extreme Points:");
-        //System.out.println(extremePoints.size());
+        System.out.println(extremePoints.get(1));
 
         for (int index : extremePoints) {
             System.out.println("Point " + index +"(" + points[index][0] + ", " + points[index][1] + ", " + points[index][2] + ")");
@@ -62,7 +61,7 @@ public class Main {
 
     //Todo for any Azimuth input
     //A lot of almost repetitive code!
-    private static List<Integer> findExtreme(double[][] points, double azimuthDegrees) {
+    static List<Integer> findExtreme(double[][] points, double azimuthDegrees) {
         List<Integer> extremePoints = new ArrayList<>();
         double minCoordinateX = points[0][0];
         double minCoordinateY = points[0][1];
@@ -133,7 +132,7 @@ public class Main {
 
 
     //Calculate distance from points to extreme point(one)
-    private static Map<Integer, Double> calculateDistancesToExtremePoints(double[][] points, List<Integer> extremePoints) {
+    static Map<Integer, Double> calculateDistancesToExtremePoints(double[][] points, List<Integer> extremePoints) {
         //List<Double> distances = new ArrayList<>();
         Map<Integer, Double> distances = new HashMap<>();
         if (extremePoints.size() == 1) {
@@ -168,19 +167,19 @@ public class Main {
     }
 
     //Distance between two points
-    private static double distanceToPoint(double x1, double y1, double x2, double y2) {
+    static double distanceToPoint(double x1, double y1, double x2, double y2) {
 
         return Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
     }
 
     //Distance between points and the line
-    private static double distanceToLine(double x, double y, double x1, double y1, double x2, double y2) {
+    static double distanceToLine(double x, double y, double x1, double y1, double x2, double y2) {
 
         return Math.abs((y2 - y1) * x - (x2 - x1) * y + x2 * y1 - y2 * x1)/Math.sqrt(Math.pow(y2 - y1, 2) + Math.pow(x2 - x1, 2));
     }
 
-    private static void calculateAndPrintHeights(double[][] points, double slopeDegrees, Map<Integer, Double> distancesMap, List<Integer> extremePoints) {
-        System.out.println("Modyfied points on 3d plane");
+    protected static void calculateAndPrintHeights(double[][] points, double slopeDegrees, Map<Integer, Double> distancesMap, List<Integer> extremePoints) {
+        //System.out.println("Points on 3d plane");
 
         for (int i = 0; i < points.length; i++) {
             // Check if the current point is not an extreme point
