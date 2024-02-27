@@ -6,15 +6,38 @@ public class Main {
         Scanner scanner = new Scanner(System.in);
 
 
-        //Todo for any sized polygon
+        // Ensure at least 3 point
+        int numOfPoints;
+        do {
+            System.out.print("Enter the number of vertices (minimum 3): ");
+            numOfPoints = scanner.nextInt();
 
-        // Input for Rectangle
-        double[][] points = {
-                {50, 50, 0},
-                {100, -50, 0},
-                {50, -100, 0},
+            if (numOfPoints < 3) {
+                System.out.println("Error: The number of vertices must be at least 3.");
+            }
 
-        };
+        } while (numOfPoints < 3);
+
+        double[][] points = new double[numOfPoints][3];
+
+        for (int i = 0; i < numOfPoints; i++) {
+            System.out.println("Enter coordinates for vertex " + (i + 1) + ":");
+            System.out.print("X: ");
+            points[i][0] = scanner.nextDouble();
+            System.out.print("Y: ");
+            points[i][1] = scanner.nextDouble();
+
+            //It's on the plain so Z is always 0
+            points[i][2] = 0.0;
+        }
+
+
+//        double[][] points = {
+//                {50, 50, 0},
+//                {100, -50, 0},
+//                {50, -100, 0},
+//
+//        };
 
         // Input for Slope and Azimuth
         System.out.print("Enter the slope in degrees: ");
@@ -55,6 +78,7 @@ public class Main {
         }
 
         // Calculate and print modified polygon on 3D plane
+        System.out.println("Output points on 3D plane");
         calculateAndPrintHeights(points, slopeDegrees, distancesMap, extremePoints);
     }
 
