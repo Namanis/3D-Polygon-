@@ -36,4 +36,5 @@ To avoid precision problems, Z is rounded to 9 numbers after decimal
  1. It only accepts and calculates when the azimuth angles are 0, 90, 180, and 270.
  2. Given that there are more than 2 extreme points, it does not consider the line of extreme points to be from the furthest points. Meaning if there are 3 points, it should find 2 points that are furthest away from each other and make it its line
  3. Some code fragments are repetitive
+ 4. No third-party libraries were used
  
